@@ -2,7 +2,7 @@
 
 Minecraft-API Protocol is a Bukkit plugin that is made with the intent to enhance your experiances with the Minecraft-API.com website by adding custom protocols to retrive multiple types of information in one go. Minecraft-API Protocol creates a lightweight server that waits for connections by Minecraft-API.com or custom sites and uses a simple protocol to get the required information. Minecraft-API Protocol is secure, and makes sure that all packets are delivered by valid clients.
 
-## Configuring Votifier
+## Configuring Minecraft-API Protocol
 
 Minecraft-API Protocol configures itself the first time it is run.
 
