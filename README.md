@@ -11,3 +11,7 @@ If you want to customize Minecraft-API Protocol, simply edit the `./plugins/Mine
 ## Encryption
 
 Minecraft-API Protocol uses a one-way randomized key to ensure that only trusted clients are able to comunicate with the protocol on the desired server. When it is first run, Minecraft-API Protocol will generate a 512 bit key and store the key in the ./plugins/Minecraft-API/secure.key file. It is essential that you do not share this key with your players, as a smart player can use the key to create a command packet and tell Minecraft-API to op thems, give them permissions, ranks etc.
+
+## Custom Packets and Developing tools
+
+This will be added later as the plugin is still in development.
