@@ -1,5 +1,11 @@
 package com.minecraftapi;
 
+/**
+ * A custom log filter for prepending plugin identifier on all log messages.
+ * 
+ * @author frelling
+ */
+
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;
 

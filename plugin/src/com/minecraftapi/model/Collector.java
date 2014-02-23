@@ -7,34 +7,43 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class Collector implements Runnable
+/**
+ * The collector class for Miencraft-API.
+ * 
+ * @author Alexis
+ */
+public class Collector
 {
 
-    /**  */
+    /** Instance of the Main class. */
     private final MinecraftAPI plugin;
-    private int uptime = 0;
-    private int taskID = -1;
+    /** The time the server started in milliseconds. */
+    private final long serverStart;
 
     public Collector(MinecraftAPI plugin)
     {
         this.plugin = plugin;
 
-        startScheduler();
+        serverStart = System.currentTimeMillis();
     }
 
+    /**
+     * Loops through a ton of data and stores it in a LinkedHashMap 
+     * to create a Gson object that can be parsed on to the client.
+     * 
+     * @return The Gson object of sever information
+     */
     public String getJsonOutput()
     {
         Gson gson = new Gson();
         LinkedHashMap<String, Object> json = new LinkedHashMap();
-        LinkedHashMap<String, Object> players = new LinkedHashMap();
-        LinkedHashMap<String, Object> worlds = new LinkedHashMap();
-        LinkedHashMap<String, Object> plugins = new LinkedHashMap();
-        LinkedHashMap<String, Object> list = new LinkedHashMap();
 
         // Status
         json.put("status", true);
 
         // Players
+        LinkedHashMap<String, Object> players = new LinkedHashMap();
+        LinkedHashMap<String, Object> list = new LinkedHashMap();
         players.put("online", plugin.getServer().getOnlinePlayers().length);
         players.put("max", plugin.getServer().getMaxPlayers());
         for (Player playerObject : plugin.getServer().getOnlinePlayers()) {
@@ -60,6 +69,7 @@ public class Collector implements Runnable
         json.put("software", plugin.getServer().getVersion());
 
         // Plugins
+        LinkedHashMap<String, Object> plugins = new LinkedHashMap();
         for (Plugin pluginObject : this.plugin.getServer().getPluginManager().getPlugins()) {
             LinkedHashMap<String, Object> pluginList = new LinkedHashMap();
             pluginList.put("version", pluginObject.getDescription().getVersion());
@@ -71,6 +81,7 @@ public class Collector implements Runnable
         json.put("plugins", plugins);
 
         // Worlds
+        LinkedHashMap<String, Object> worlds = new LinkedHashMap();
         for (World worldObject : plugin.getServer().getWorlds()) {
             LinkedHashMap<String, Object> world = new LinkedHashMap();
             world.put("world-type", worldObject.getWorldType().getName());
@@ -83,32 +94,9 @@ public class Collector implements Runnable
         json.put("worlds", worlds);
 
         // Uptime
-        json.put("uptime", uptime);
-
-
+        final long diff = System.currentTimeMillis() - serverStart;
+        json.put("uptime", (int) (diff / 1000 % 60));
 
         return gson.toJson(json);
-    }
-
-    public void startScheduler()
-    {
-        if (taskID != -1) {
-            return;
-        }
-        taskID = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 0, 20);
-    }
-
-    public void stopScheduler()
-    {
-        if (taskID == -1) {
-            return;
-        }
-        plugin.getServer().getScheduler().cancelTask(taskID);
-    }
-
-    @Override
-    public void run()
-    {
-        uptime += 1;
     }
 }

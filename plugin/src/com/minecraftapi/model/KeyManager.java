@@ -7,6 +7,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Random;
 
+/**
+ * The key manager class for Minecraft-API,
+ * Read, write and generate new keys for the Minecraft-API.com protocol.
+ * 
+ * @author Alexis
+ */
 public class KeyManager
 {
 
@@ -18,6 +24,11 @@ public class KeyManager
         this.directory = directory;
     }
 
+    /**
+     * Loads the private key from the disk, if its already loaded it will just return it.
+     * 
+     * @return The protocol key
+     */
     public String getKey()
     {
         if (key == null) {
@@ -30,6 +41,11 @@ public class KeyManager
         return key;
     }
 
+    /**
+     * Read the key from the disk, if it doesn't exists it will generate a new 512-bit key.
+     * 
+     * @throws Exception 
+     */
     private void readKey() throws Exception
     {
         File keyFile = new File(directory + "/secure.key");
@@ -38,13 +54,13 @@ public class KeyManager
             try (BufferedReader bw = new BufferedReader(fr)) {
                 key = bw.readLine();
             }
-            if(key != null && key.length() == 64) {
+            if(key != null && key.length() == 512) {
                 return;
             }
         }
 
         // Write the new file
-        this.key = generateKey();
+        key = generateKey();
         keyFile.delete();
         keyFile.createNewFile();
         FileWriter fw = new FileWriter(keyFile.getAbsoluteFile());
@@ -62,7 +78,7 @@ public class KeyManager
             bw.newLine();
             bw.write("Example of usage:");
             bw.newLine();
-            bw.write("http://minecraft-api.com/v1/plugin/?server=play.server.com&key=" + key);
+            bw.write("http://minecraft-api.com/v1/plugin/?server=Your-Server-Goes-Here&key=Your-Key-Goes-Here");
             bw.newLine();
             bw.newLine();
             bw.write("For more information, check out the link below.");
@@ -75,8 +91,8 @@ public class KeyManager
     {
         String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-!()[]{}+";
         Random rnd = new Random();
-        StringBuilder sb = new StringBuilder(64);
-        for (int i = 0; i < 64; i++) {
+        StringBuilder sb = new StringBuilder(512);
+        for (int i = 0; i < 512; i++) {
             sb.append(AB.charAt(rnd.nextInt(AB.length())));
         }
         return sb.toString();

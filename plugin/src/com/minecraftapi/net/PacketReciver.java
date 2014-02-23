@@ -67,7 +67,6 @@ public class PacketReciver extends Thread
         }
         try {
             server.close();
-            LOG.log(Level.SEVERE, "Unable to shut down packet receiver cleanly.");
         } catch (Exception ex) {
             LOG.log(Level.WARNING, "Unable to shut down packet receiver cleanly.");
         }
@@ -87,7 +86,7 @@ public class PacketReciver extends Thread
                 DataOutputStream response = new DataOutputStream(socket.getOutputStream());
 
                 // Get the packet list
-                String packet = input.readLine().replace("\\", "");
+                String packet = input.readLine().replace("\\0x", "0x");
                 String[] packetList = packet.split("0x00");
 
                 String key = packetList[0];
@@ -111,13 +110,13 @@ public class PacketReciver extends Thread
                 if (plugin.keyManager.getKey().equals(key)) {
                     if (action.equals(Packet.REQUEST)) {
                         if (plugin.isDebug()) {
-                            LOG.log(Level.INFO, "Recived request packet -> IP:{0} KEY:({1})", new Object[]{socket.getRemoteSocketAddress(), key});
+                            LOG.log(Level.INFO, "Recived request packet -> IP:{0}", new Object[]{socket.getRemoteSocketAddress()});
                         }
                         responseString = plugin.collector.getJsonOutput();
                     } else if (action.equals(Packet.COMMAND)) {
                         String command = packetList[2];
                         if (plugin.isDebug()) {
-                            LOG.log(Level.INFO, "Recived command packet -> IP:{0} KEY:({1}) COMMAND:({2})", new Object[]{socket.getRemoteSocketAddress(), key, command});
+                            LOG.log(Level.INFO, "Recived command packet -> IP:{0} COMMAND:({1})", new Object[]{socket.getRemoteSocketAddress(), command});
                         }
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
                         responseString = "{\"message\":\"Command have been executed successfully\",\"command\":\"" + command + "\"}";

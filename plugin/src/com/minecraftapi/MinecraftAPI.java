@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2014 Minecraft-API.com
+ * This file is part of Minecraft-API.
+ * 
+ * Minecraft-API is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Minecraft-API is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Minecraft-API. If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.minecraftapi;
 
 import com.minecraftapi.metrics.Metrics;
@@ -6,10 +23,16 @@ import com.minecraftapi.model.KeyManager;
 import com.minecraftapi.net.PacketReciver;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * The main Minecraft-API plugin class.
+ * 
+ * @author Alexis Tan
+ */
 public class MinecraftAPI extends JavaPlugin
 {
 
@@ -30,6 +53,9 @@ public class MinecraftAPI extends JavaPlugin
     /** Debug mode flag */
     private boolean debug;
 
+    /**
+     * Attach custom log filter to logger.
+     */
     static {
         LOG.setFilter(new LogFilter(logPrefix));
     }
@@ -39,6 +65,7 @@ public class MinecraftAPI extends JavaPlugin
     {
         MinecraftAPI.instance = this;
 
+        // Run metrics 
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
@@ -60,7 +87,6 @@ public class MinecraftAPI extends JavaPlugin
             getDataFolder().mkdir();
         }
         File config = new File(getDataFolder() + "/config.yml");
-
 
         /*
          * Use IP address from server.properties as a default for
@@ -121,7 +147,7 @@ public class MinecraftAPI extends JavaPlugin
     @Override
     public void onDisable()
     {
-        collector.stopScheduler();
+        packetReciver.shutdown();
     }
 
     private void gracefulExit()
@@ -150,6 +176,11 @@ public class MinecraftAPI extends JavaPlugin
         return version;
     }
 
+    /**
+     * Checks to see if debug mode is enabled.
+     * 
+     * @return The debug flag
+     */
     public boolean isDebug()
     {
         return debug;
