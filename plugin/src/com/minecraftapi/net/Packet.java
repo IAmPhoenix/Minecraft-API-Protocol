@@ -9,7 +9,7 @@ enum Packet
 {
 
     /** 0x00 */
-    HANDSHAKE(0),
+    KEEP_ALIVE(0),
     /** 0x01 */
     REQUEST(1),
     /** 0x02 */
