@@ -95,7 +95,7 @@ public class Collector
 
         // Uptime
         final long diff = System.currentTimeMillis() - serverStart;
-        json.put("uptime", (int) (diff / 1000 % 60));
+        json.put("uptime", (int) (diff / 1000));
 
         return gson.toJson(json);
     }
