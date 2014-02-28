@@ -11,7 +11,7 @@ import java.util.Random;
  * The key manager class for Minecraft-API,
  * Read, write and generate new keys for the Minecraft-API.com protocol.
  * 
- * @author Alexis
+ * @author Alexis Tan
  */
 public class KeyManager
 {

@@ -1,6 +1,7 @@
 package com.minecraftapi.net;
 
 import com.minecraftapi.MinecraftAPI;
+import com.minecraftapi.net.events.CommandPacketEvent;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
 /**
  * The Packet receiving server.
  * 
- * @author Alexis
+ * @author Alexis Tan
  */
 public class PacketReciver extends Thread
 {
@@ -118,8 +119,16 @@ public class PacketReciver extends Thread
                         if (plugin.isDebug()) {
                             LOG.log(Level.INFO, "Recived command packet -> IP:{0} COMMAND:({1})", new Object[]{socket.getRemoteSocketAddress(), command});
                         }
-                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command);
-                        responseString = "{\"message\":\"Command have been executed successfully\",\"command\":\"" + command + "\"}";
+
+                        CommandPacketEvent event = new CommandPacketEvent(command, socket.getInetAddress().getHostAddress());
+                        plugin.getServer().getPluginManager().callEvent(event);
+
+                        if (!event.isCanceled()) {
+                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), event.getCommand());
+                            responseString = "{\"message\":\"Command have been executed successfully\",\"command\":\"" + command + "\"}";
+                        } else {
+                            responseString = "{\"message\":\"Command have been canceld by an Event\",\"command\":\"" + command + "\"}";
+                        }
                     } else if (action.equals(Packet.UNKNOW)) {
                         responseString = "{\"error\":\"Unknow action packet. Ignoring request.\"}";
                     }

@@ -2,6 +2,7 @@ package com.minecraftapi.model;
 
 import com.google.gson.Gson;
 import com.minecraftapi.MinecraftAPI;
+import com.minecraftapi.net.events.RequestPacketEvent;
 import java.util.LinkedHashMap;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -10,7 +11,7 @@ import org.bukkit.plugin.Plugin;
 /**
  * The collector class for Miencraft-API.
  * 
- * @author Alexis
+ * @author Alexis Tan.
  */
 public class Collector
 {
@@ -97,6 +98,12 @@ public class Collector
         final long diff = System.currentTimeMillis() - serverStart;
         json.put("uptime", (int) (diff / 1000));
 
+        RequestPacketEvent event = new RequestPacketEvent(json);
+        plugin.getServer().getPluginManager().callEvent(event);
+        json = event.getJson();
+        if (json.isEmpty() || json == null) {
+            json.put("error", "The json array was empty when it was cached from the event handler!");
+        }
         return gson.toJson(json);
     }
 }

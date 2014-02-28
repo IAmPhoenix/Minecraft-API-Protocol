@@ -3,7 +3,7 @@ package com.minecraftapi.net;
 /**
  * The Packets that are available within the protocol.
  * 
- * @author Alexis
+ * @author Alexis Tan
  */
 enum Packet
 {
