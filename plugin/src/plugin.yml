@@ -1,6 +1,6 @@
 name: Minecraft-API
 main: com.minecraftapi.MinecraftAPI
-version: 1.0
+version: 1.1
 website: http://minecraft-api.com/documentation#plugin
 description: A plugin that adds a custom protocol for Minecraft-API.com.
 author: Senither
